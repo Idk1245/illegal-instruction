@@ -106,6 +106,8 @@ class StaticShader extends FlxShader // https://www.shadertoy.com/view/ldjGzV an
 
   void main()
   {
+    #pragma body 
+
     vec2 uv =  openfl_TextureCoordv.xy;
 
     if(!enabled){
@@ -136,9 +138,9 @@ float xOffset = (fuzzOffset + largeFuzzOffset) * horzFuzzOpt;
 
   staticVal *= bottomStaticOpt;
 
-float red 	=   flixel_texture2D(	bitmap, 	vec2(uv.x + xOffset -0.01*rgbOffsetOpt,y)).r+staticVal;
-float green = 	flixel_texture2D(	bitmap, 	vec2(uv.x + xOffset,	  y)).g+staticVal;
-float blue 	=	flixel_texture2D(	bitmap, 	vec2(uv.x + xOffset +0.01*rgbOffsetOpt,y)).b+staticVal;
+float red  = flixel_texture2D(bitmap, vec2(uv.x + xOffset -0.01*rgbOffsetOpt,y)).r+staticVal;
+float green = flixel_texture2D(bitmap, vec2(uv.x + xOffset,	  y)).g+staticVal;
+float blue = flixel_texture2D(bitmap, vec2(uv.x + xOffset +0.01*rgbOffsetOpt,y)).b+staticVal;
 
 vec3 color = vec3(red,green,blue);
 float scanline = sin(uv.y*800.0)*0.04*scalinesOpt;
