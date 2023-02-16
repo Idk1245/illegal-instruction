@@ -155,10 +155,11 @@ vec4 interlace(vec2 co, vec4 col) {
 
 void main()
 {
+ #pragma body
   vec2 uv =  openfl_TextureCoordv.xy;
 
     // Normalized pixel coordinates (from 0 to 1)
-	vec2 uv =  fragCoord.xy/iResolution.xy;
+	vec2 uv = fragCoord.xy/iResolution.xy;
     float aspect = iResolution.x / iResolution.y;
     vec2 a = vec2(uv.x * aspect , uv.y);
     vec2 uv2 = vec2(a.x / iResolution.x, exp(a.y));
@@ -200,9 +201,9 @@ void main()
         
     staticVal *= bottomStaticOpt;
 	
-	float red 	=   texture2D(	bitmap, 	vec2(uv.x + xOffset -0.01*rgbOffsetOpt,y)).r+staticVal;
-	float green = 	texture2D(	bitmap, 	vec2(uv.x + xOffset,	  y)).g+staticVal;
-	float blue 	=	texture2D(	bitmap, 	vec2(uv.x + xOffset +0.01*rgbOffsetOpt,y)).b+staticVal;
+	float red = texture2D(bitmap, vec2(uv.x + xOffset -0.01*rgbOffsetOpt,y)).r+staticVal;
+	float green = texture2D(bitmap, vec2(uv.x + xOffset,	  y)).g+staticVal;
+	float blue = texture2D(bitmap, vec2(uv.x + xOffset +0.01*rgbOffsetOpt,y)).b+staticVal;
 	
 	vec3 color = vec3(red,green,blue);
 	float scanline = sin(uv.y*800.0)*0.04*scalinesOpt;
