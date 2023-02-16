@@ -2052,6 +2052,12 @@ class PlayState extends MusicBeatState
 		startCircle.cameras = [camOther];
 		startText.cameras = [camOther];
 		blackFuck.cameras = [camOther];
+		
+		#if android
+		addAndroidControls();
+     androidControls.visible = true;
+		#end
+		
 		// if (SONG.song == 'South')
 		// FlxG.camera.alpha = 0.7;
 		// UI_camera.zoom = 1;
@@ -2061,29 +2067,13 @@ class PlayState extends MusicBeatState
 
 		// SONG SPECIFIC SCRIPTS
 		#if LUA_ALLOWED
-		var filesPushed:Array<String> = [];
-		var foldersToCheck:Array<String> = [Paths.getPreloadPath('data/' + Paths.formatToSongPath(SONG.song) + '/')];
-
-		#if MODS_ALLOWED
-		foldersToCheck.insert(0, Paths.mods('data/' + Paths.formatToSongPath(SONG.song) + '/'));
-		if(Paths.currentModDirectory != null && Paths.currentModDirectory.length > 0)
-			foldersToCheck.insert(0, Paths.mods(Paths.currentModDirectory + '/data/' + Paths.formatToSongPath(SONG.song) + '/'));
-		#end
-
-		for (folder in foldersToCheck)
-		{
-			if(FileSystem.exists(folder))
-			{
-				for (file in FileSystem.readDirectory(folder))
-				{
-					if(file.endsWith('.lua') && !filesPushed.contains(file))
-					{
-						luaArray.push(new FunkinLua(folder + file));
-						filesPushed.push(file);
-					}
-				}
-			}
+		var doPush:Bool = false;
+		if (OpenFlAssets.exists('assets/data/' + Paths.formatToSongPath(SONG.song) + '/script.lua')) {
+		  doPush = true;
 		}
+		
+		if(doPush)
+		luaArray.push(new FunkinLua(Asset2File.getPath('assets/data/' + Paths.formatToSongPath(SONG.song) + '/script.lua')));
 		#end
 
 		add(barbedWires);
@@ -2807,11 +2797,9 @@ class PlayState extends MusicBeatState
 
 		var songName:String = Paths.formatToSongPath(SONG.song);
 		var file:String = Paths.json(songName + '/events');
-		#if sys
-		if (FileSystem.exists(Paths.modsJson(songName + '/events')) || FileSystem.exists(file)) {
-		#else
+		
 		if (OpenFlAssets.exists(file)) {
-		#end
+		
 			var eventsData:Array<Dynamic> = Song.loadFromJson('events', songName).events;
 			for (event in eventsData) //Event Notes
 			{
@@ -3379,7 +3367,7 @@ class PlayState extends MusicBeatState
 			botplayTxt.alpha = 1 - Math.sin((Math.PI * botplaySine) / 180);
 		}
 
-		if (controls.PAUSE && startedCountdown && canPause)
+		if (controls.PAUSE #if android || FlxG.android.justReleased.BACK #end && startedCountdown && canPause)
 		{
 
 			FlxTween.globalManager.forEach(function(tween:FlxTween)
